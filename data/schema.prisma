@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator pothos {
+  provider = "prisma-pothos-types"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://devbird_test_db:123456@localhost:3306/devbird_test_db"
+}
+
+model Document {
+  id                Int  @default(autoincrement()) @id
+  name              String
+  publishedAt       DateTime?
+  lastPublishedAt   DateTime?
+  archivedAt        DateTime?
+  audienceMembers   Person[]
+
+  @@index([name])
+}
+
+model Person {
+  id        Int     @default(autoincrement()) @id
+  fullName  String
+  image     String
+  metadata  PersonMetadata?
+  documents Document[]
+
+  @@index([fullName])
+}
+
+model PersonMetadata {
+  id        Int     @default(autoincrement()) @id
+  country   String
+  state     String?
+  city      String?
+  person    Person  @relation(fields: [personId], references: [id])
+  personId  Int     @unique
+}
+
+
